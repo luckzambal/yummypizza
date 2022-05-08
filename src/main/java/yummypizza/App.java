@@ -1,7 +1,7 @@
 package yummypizza;
 
-import yummypizza.model.*;
-import yummypizza.repo.*;
+//import yummypizza.model.*;
+//import yummypizza.repo.*;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
