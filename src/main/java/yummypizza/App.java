@@ -10,7 +10,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @SpringBootApplication
 public class App implements InitializingBean {
-	
+	/*
 	@Autowired
 	private GoodsSoldRepo goodsSold;
 	
@@ -22,7 +22,7 @@ public class App implements InitializingBean {
 	
 	@Autowired
 	private ManagerRepo manager;
-
+	*/
 	public static void main(String[] args) {
 		SpringApplicationBuilder builder = new SpringApplicationBuilder(App.class);
 		builder.headless(false).run(args);
