@@ -30,5 +30,5 @@ public interface InvoiceRepo extends CrudRepository<Invoice,String> {
 //	public int getSize() {
 //		return this.invoiceById.size();
 //	}
-	Invoice findByName(String name);
+	Invoice findByInvoiceNumber(String invoiceNumber);
 }

@@ -8,25 +8,22 @@ public class GoodsSold {
 	@Id
 	private Integer orderId;
 	
-	private Date date;
+	private Date orderDate;
 	
 	private String itemName;
 	
 	private Double itemQuantity;
 	
-	/*public GoodsSold(Integer orderId, Date date, String itemName, Double itemQuantity) {
-		this.orderId = orderId;
-		this.date = date;
-		this.itemName = itemName;
-		this.itemQuantity = itemQuantity;
-	}*/
+	private GoodsSold() {
+		
+	}
 	
 	public Integer getOrderId() {
 		return orderId;
 	}
 	
 	public Date getDate() {
-		return date;
+		return orderDate;
 	}
 	
 	public String getItemName() {
@@ -35,5 +32,12 @@ public class GoodsSold {
 	
 	public Double getItemQuantity() {
 		return itemQuantity;
+	}
+	
+	public GoodsSold(Integer orderId, Date orderDate, String itemName, Double itemQuantity) {
+		this.orderId = orderId;
+		this.orderDate = orderDate;
+		this.itemName = itemName;
+		this.itemQuantity = itemQuantity;
 	}
 }

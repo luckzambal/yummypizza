@@ -1,21 +1,23 @@
 package yummypizza.model;
 
-import javax.persistence.*;
+import javax.persistence.Id;
+import javax.persistence.Entity;
 
 @Entity
 public class Inventory {
+	
 	@Id
 	private Integer id;
 	
 	private String itemName;
-	
 	private Boolean isPerishable;
-	
 	private Double itemQuantity;
-	
 	private String unit;
-	
 	private Double minimumQuantity;
+	
+	private Inventory () {
+		
+	}
 	
 	public Inventory(Integer id, String itemName, Boolean isPerishable, Double itemQuantity, String unit, Double minimumQuantity) {
 		this.id = id;

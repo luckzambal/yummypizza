@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Currency;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -36,8 +37,12 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.text.DateFormatter;
 import javax.swing.text.NumberFormatter;
 
+import yummypizza.model.Inventory;
 import yummypizza.model.Invoice;
 import yummypizza.model.RawIngredients;
+import yummypizza.repo.InventoryRepo;
+import yummypizza.repo.InvoiceRepo;
+import yummypizza.repo.ProductInInvoiceRepo;
 import yummypizza.repo.RawIngredientsRepo;
 import yummypizza.model.ProductInInvoice;
 import java.awt.event.MouseAdapter;
@@ -55,8 +60,12 @@ public class UploadInvoice extends JDialog {
 	
 	private RawIngredients ingredients;
 	private Invoice invoice;
+	private InvoiceRepo invoices;
 	private ProductInInvoice productInInvoice;
+	private ProductInInvoiceRepo productsInInvoice;
 	private RawIngredientsRepo rawIngredients;
+	private Inventory inventory;
+	private InventoryRepo inventories;
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtInvoiceNumber;
@@ -92,9 +101,14 @@ public class UploadInvoice extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public UploadInvoice(RawIngredientsRepo rawIngredients) {
+	public UploadInvoice(InventoryRepo inventories, RawIngredientsRepo rawIngredients, InvoiceRepo invoices, ProductInInvoiceRepo productsInInvoice, Inventory inventory) {
+		this.inventories = inventories;
 		this.rawIngredients = rawIngredients;
+		this.invoices = invoices;
+		this.productsInInvoice = productsInInvoice;
 		this.model = new RawIngredientsTableModel();
+		
+		this.setModal(true);
 		
 		//Integer formatting for staff ID text field
 		NumberFormat format = NumberFormat.getInstance();
@@ -252,21 +266,21 @@ public class UploadInvoice extends JDialog {
 									.addGap(18)
 									.addComponent(txtQuantity, GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE))
 								.addGroup(gl_contentPanel.createSequentialGroup()
-									.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING, false)
+									.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
 										.addGroup(gl_contentPanel.createSequentialGroup()
 											.addComponent(lblUnitPrice, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
 											.addGap(18)
-											.addComponent(txtUnitPrice))
+											.addComponent(txtUnitPrice, GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE))
 										.addGroup(gl_contentPanel.createSequentialGroup()
 											.addComponent(lblProduct, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
 											.addGap(18)
-											.addComponent(txtProductNumber, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)))
+											.addComponent(txtProductNumber, GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)))
 									.addPreferredGap(ComponentPlacement.RELATED)
 									.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
 										.addGroup(gl_contentPanel.createSequentialGroup()
 											.addComponent(lblNewLabel)
 											.addPreferredGap(ComponentPlacement.RELATED)
-											.addComponent(txtUnit, 113, 113, 113))
+											.addComponent(txtUnit, GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE))
 										.addComponent(txtProductName, GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)))
 								.addGroup(gl_contentPanel.createSequentialGroup()
 									.addComponent(lblStaffId, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
@@ -275,11 +289,11 @@ public class UploadInvoice extends JDialog {
 								.addGroup(gl_contentPanel.createSequentialGroup()
 									.addComponent(lblTotalCost, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
 									.addGap(18)
-									.addComponent(txtTotalCost, 270, 270, 270))
+									.addComponent(txtTotalCost, GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE))
 								.addGroup(gl_contentPanel.createSequentialGroup()
 									.addComponent(lblDate, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
 									.addGap(18)
-									.addComponent(txtTransactionDate, 270, 270, 270))
+									.addComponent(txtTransactionDate, GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE))
 								.addGroup(gl_contentPanel.createSequentialGroup()
 									.addComponent(lblInvoiceNumber)
 									.addGap(18)
@@ -289,9 +303,12 @@ public class UploadInvoice extends JDialog {
 					.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblChooseProduct, GroupLayout.PREFERRED_SIZE, 184, GroupLayout.PREFERRED_SIZE)
-						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 328, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap())
+						.addGroup(gl_contentPanel.createSequentialGroup()
+							.addComponent(lblChooseProduct, GroupLayout.PREFERRED_SIZE, 184, GroupLayout.PREFERRED_SIZE)
+							.addGap(144))
+						.addGroup(gl_contentPanel.createSequentialGroup()
+							.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE)
+							.addContainerGap())))
 		);
 		gl_contentPanel.setVerticalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)
@@ -390,6 +407,7 @@ public class UploadInvoice extends JDialog {
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					createProductInInvoice();
+					updateInventory(Integer.valueOf(txtProductNumber.getText()),Double.valueOf(txtQuantity.getText()));
 					addTotalCost();
 					clearProducts();
 				}
@@ -408,8 +426,9 @@ public class UploadInvoice extends JDialog {
 				okButton.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						if(txtProductNumber.getText() != "") {
+						if(!txtProductNumber.getText().isEmpty()) {
 							createProductInInvoice();
+							updateInventory(Integer.valueOf(txtProductNumber.getText()),Double.valueOf(txtQuantity.getText()));
 							addTotalCost();
 						}
 						
@@ -459,6 +478,8 @@ public class UploadInvoice extends JDialog {
 			Integer.valueOf(txtStaffId.getText()),
 			Boolean.valueOf(chkPaid.isSelected())
 		);
+		
+		invoices.save(invoice);
 	}
 	
 	private void createProductInInvoice() {
@@ -468,11 +489,13 @@ public class UploadInvoice extends JDialog {
 			Double.valueOf(txtQuantity.getText()),
 			Double.valueOf(txtSubtotalCost.getText())
 		);
+		
+		productsInInvoice.save(productInInvoice);
 	}
 	
-	private ProductInInvoice showDialog() {
+	public Inventory showDialog() {
 		setVisible(true);
-		return productInInvoice;
+		return inventory;
 	}
 	
 	private void addTotalCost() {
@@ -523,6 +546,29 @@ public class UploadInvoice extends JDialog {
 	     } catch (NumberFormatException x) {
 	         return defaultValue;
 	     }  
+	}
+	
+	private void updateInventory(Integer id, Double addedQuantity) {
+		ShowInventory parent = new ShowInventory(inventories, rawIngredients, invoices, productsInInvoice);
+		Double originalQuantity;
+		
+		Inventory inventoryToUpdate = inventories.readById(id);
+		
+		originalQuantity = inventoryToUpdate.getItemQuantity();
+		
+		this.inventory = new Inventory(
+			inventoryToUpdate.getId(),
+			inventoryToUpdate.getItemName(),
+			inventoryToUpdate.getIsPerishable(),
+			originalQuantity+addedQuantity,
+			inventoryToUpdate.getUnit(),
+			inventoryToUpdate.getMinimumQuantity()
+		);
+		
+		inventories.save(inventory);
+		parent.tblInventory.repaint();
+		parent.model.fireTableDataChanged();
+		parent.model.refreshData();
 	}
 	
 	private class RawIngredientsTableModel extends AbstractTableModel {
