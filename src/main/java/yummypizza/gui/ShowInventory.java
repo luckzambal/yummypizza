@@ -44,7 +44,6 @@ import yummypizza.repo.InventoryRepo;
 import yummypizza.repo.InvoiceRepo;
 import yummypizza.repo.ProductInInvoiceRepo;
 import yummypizza.repo.RawIngredientsRepo;
-import yummypizza.service.ReportService;
 
 public class ShowInventory extends JFrame {
 	
