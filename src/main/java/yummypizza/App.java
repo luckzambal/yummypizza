@@ -2,7 +2,7 @@ package yummypizza;
 
 import yummypizza.model.*;
 import yummypizza.repo.*;
-import yummypizza.gui.ShowInventory;
+import yummypizza.gui.EnterLogin;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -27,6 +27,9 @@ public class App implements InitializingBean {
 	@Autowired
 	private RawIngredientsRepo rawIngredients;
 	
+	@Autowired
+	private StaffRepo staffs;
+	
 	public static void main(String[] args) {
 		SpringApplicationBuilder builder = new SpringApplicationBuilder(App.class);
 		builder.headless(false).run(args);
@@ -34,7 +37,8 @@ public class App implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		ShowInventory gui = new ShowInventory(this.inventory, this.rawIngredients, this.invoice, this.productInInvoice);
+//		ShowInventory gui = new ShowInventory(this.inventory, this.rawIngredients, this.invoice, this.productInInvoice);
+		EnterLogin gui = new EnterLogin(this.staffs, this.inventory, this.rawIngredients, this.invoice, this.productInInvoice);
 		gui.pack();
 		gui.setVisible(true);
 	}
