@@ -1,13 +1,24 @@
 package yummypizza.gui;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import static javax.swing.JOptionPane.showMessageDialog;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import java.awt.Color;
 import javax.swing.border.LineBorder;
 
 import yummypizza.model.Staff;
@@ -16,18 +27,6 @@ import yummypizza.repo.InvoiceRepo;
 import yummypizza.repo.ProductInInvoiceRepo;
 import yummypizza.repo.RawIngredientsRepo;
 import yummypizza.repo.StaffRepo;
-
-import java.awt.Dimension;
-import java.awt.Font;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JPasswordField;
-import static javax.swing.JOptionPane.showMessageDialog;
 
 public class EnterLogin extends JDialog {
 

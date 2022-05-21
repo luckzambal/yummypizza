@@ -42,12 +42,6 @@ public class ShowInventory extends JFrame {
 	private InventoryRepo inventories;
 	public InventoryTableModel model;
 	
-	private Inventory selectedInventory;
-	
-	private RawIngredientsRepo ingredients;
-	private InvoiceRepo invoices;
-	private ProductInInvoiceRepo productsInInvoice;
-
 	private JPanel contentPane;
 	public JTable tblInventory;
 	
@@ -56,12 +50,14 @@ public class ShowInventory extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ShowInventory(InventoryRepo inventories, RawIngredientsRepo ingredients, InvoiceRepo invoices, ProductInInvoiceRepo productsInInvoice) {
+	public ShowInventory(
+			InventoryRepo inventories,
+			RawIngredientsRepo ingredients,
+			InvoiceRepo invoices,
+			ProductInInvoiceRepo
+			productsInInvoice) {
 		
 		this.inventories = inventories;
-		this.ingredients = ingredients;
-		this.invoices = invoices;
-		this.productsInInvoice = productsInInvoice;
 		this.model = new InventoryTableModel();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -166,16 +162,6 @@ public class ShowInventory extends JFrame {
 		);
 		
 		tblInventory = new JTable(model);
-		tblInventory.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				int row = tblInventory.getSelectedRow();
-				if(row >= 0)
-					selectedInventory = model.getInventoryAtRow(row);
-				else
-					selectedInventory = null;
-			}
-			
-		});
 		scrollPane.setViewportView(tblInventory);
 		contentPane.setLayout(gl_contentPane);
 		
@@ -211,7 +197,7 @@ public class ShowInventory extends JFrame {
 	
 	class InventoryTableModel extends AbstractTableModel {
 		
-		private String[] columnNames = {"ID", "Item Name", "Is Perishable", "Quantity", "Unit", "Min. Quantity"};
+		private String[] columnNames = {"Product Number", "Item Name", "Is Perishable", "Quantity", "Unit", "Min. Quantity"};
 		
 		private List<Inventory> rows;
 		
@@ -243,7 +229,7 @@ public class ShowInventory extends JFrame {
 			Inventory inventory = rows.get(rowIndex);
 			
 			switch(columnIndex) {
-				case 0: return inventory.getId();
+				case 0: return inventory.getProductNumber();
 				case 1: return inventory.getItemName();
 				case 2: return inventory.getIsPerishable();
 				case 3: return inventory.getItemQuantity();
@@ -268,13 +254,6 @@ public class ShowInventory extends JFrame {
 		for(Inventory inventory: inventories.findAll()) {
 			inventoryReport.add(inventory);
 		}
-//		
-//		try(CSVWriter writer = new CSVWriter(new FileWriter("C:\\Inventory Report "+currentDate+".csv"))){
-//			writer.writeAll(inventoryReport);
-//		}
-//		catch(IOException e) {
-//			showMessageDialog(null,"Failed to export file");
-//		}
 		
 		FileWriter file = null;
 		
@@ -283,8 +262,6 @@ public class ShowInventory extends JFrame {
 			
 			file.append("Product Number, Item Name, Is Perishable, Item Quantity, Unit, Minimum Quantity\n");
 			for(Inventory inventory : inventoryReport) {
-				file.append(inventory.getId().toString());
-				file.append(",");
 				file.append(inventory.getItemName());
 				file.append(",");
 				file.append(inventory.getIsPerishable().toString());

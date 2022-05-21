@@ -1,13 +1,12 @@
 package yummypizza.model;
 
-import javax.persistence.Id;
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 @Entity
 public class Inventory {
 	
 	@Id
-	private Integer id;
+	private Integer productNumber;
 	
 	private String itemName;
 	private Boolean isPerishable;
@@ -19,8 +18,8 @@ public class Inventory {
 		
 	}
 	
-	public Inventory(Integer id, String itemName, Boolean isPerishable, Double itemQuantity, String unit, Double minimumQuantity) {
-		this.id = id;
+	public Inventory(Integer productNumber, String itemName, Boolean isPerishable, Double itemQuantity, String unit, Double minimumQuantity) {
+		this.productNumber = productNumber;
 		this.itemName = itemName;
 		this.isPerishable = isPerishable;
 		this.itemQuantity = itemQuantity;
@@ -28,8 +27,8 @@ public class Inventory {
 		this.minimumQuantity = minimumQuantity;
 	}
 	
-	public Integer getId() {
-		return id;
+	public Integer getProductNumber() {
+		return productNumber;
 	}
 	
 	public String getItemName() {

@@ -1,34 +1,36 @@
 package yummypizza.gui;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.Color;
 import java.awt.Dimension;
-
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JTextField;
-import javax.swing.JFormattedTextField;
-import javax.swing.JCheckBox;
-import javax.swing.JEditorPane;
-import javax.swing.JSeparator;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -39,22 +41,12 @@ import javax.swing.text.NumberFormatter;
 
 import yummypizza.model.Inventory;
 import yummypizza.model.Invoice;
+import yummypizza.model.ProductInInvoice;
 import yummypizza.model.RawIngredients;
 import yummypizza.repo.InventoryRepo;
 import yummypizza.repo.InvoiceRepo;
 import yummypizza.repo.ProductInInvoiceRepo;
 import yummypizza.repo.RawIngredientsRepo;
-import yummypizza.model.ProductInInvoice;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.JLayeredPane;
-import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
-import javax.swing.JTable;
-import java.awt.event.InputMethodListener;
-import java.awt.event.InputMethodEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class UploadInvoice extends JDialog {
 	
@@ -419,7 +411,7 @@ public class UploadInvoice extends JDialog {
 			btnAdd.setContentAreaFilled(false);
 			btnAdd.setBackground(Color.WHITE);
 			btnAdd.setForeground(new Color(255, 99, 71));
-			btnAdd.setFont(new Font("Tahoma", Font.PLAIN, 12));
+			btnAdd.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			buttonPane.add(btnAdd);
 			{
 				okButton = new JButton("OK");
@@ -436,7 +428,7 @@ public class UploadInvoice extends JDialog {
 						close();
 					}
 				});
-				okButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
+				okButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 				okButton.setForeground(new Color(255, 99, 71));
 				okButton.setBorder(new LineBorder(new Color(255, 99, 71), 2, true));
 				okButton.setContentAreaFilled(false);
@@ -460,7 +452,7 @@ public class UploadInvoice extends JDialog {
 				cancelButton.setBackground(Color.WHITE);
 				cancelButton.setBorder(new LineBorder(new Color(255, 99, 71), 2, true));
 				cancelButton.setForeground(new Color(255, 99, 71));
-				cancelButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
+				cancelButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 				cancelButton.setPreferredSize(new Dimension(65, 23));
 				cancelButton.setMinimumSize(new Dimension(65, 23));
 				cancelButton.setMaximumSize(new Dimension(65, 23));
@@ -548,16 +540,16 @@ public class UploadInvoice extends JDialog {
 	     }  
 	}
 	
-	private void updateInventory(Integer id, Double addedQuantity) {
+	private void updateInventory(Integer productNumber, Double addedQuantity) {
 		ShowInventory parent = new ShowInventory(inventories, rawIngredients, invoices, productsInInvoice);
 		Double originalQuantity;
 		
-		Inventory inventoryToUpdate = inventories.readById(id);
+		Inventory inventoryToUpdate = inventories.readByProductNumber(productNumber);
 		
 		originalQuantity = inventoryToUpdate.getItemQuantity();
 		
 		this.inventory = new Inventory(
-			inventoryToUpdate.getId(),
+			inventoryToUpdate.getProductNumber(),
 			inventoryToUpdate.getItemName(),
 			inventoryToUpdate.getIsPerishable(),
 			originalQuantity+addedQuantity,
